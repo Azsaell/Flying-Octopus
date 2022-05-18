@@ -28,9 +28,14 @@ public class PlayerController : MonoBehaviour {
         if (numberOfDashes > 0 && Input.GetKeyDown(KeyCode.LeftShift)) {
             var dashDirection = rb.velocity;
             dashDirection.y = 0;
-            dashDirection = dashDirection.normalized;
-            rb.AddForce(dashDirection * 5, ForceMode.Impulse);
-            numberOfDashes--;
+            if (dashDirection.magnitude!=0) {
+                dashDirection = transform.rotation * Vector3.forward * movementSpeed * 3;
+                //rb.AddForce(dashDirection * 5, ForceMode.Impulse);
+                dashDirection.y = rb.velocity.y;
+                rb.velocity = dashDirection;
+                numberOfDashes--;
+            }
+
         }
         
     }
@@ -68,17 +73,21 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void HandlePlayerMovement() {
-        var userKeyboardInput = new Vector3(
-            Input.GetAxis("Horizontal"),
-            0,
-            Input.GetAxis("Vertical")
-        );
-        var velocity = transform.rotation * userKeyboardInput * movementSpeed;
+        if (Math.Abs(rb.velocity.x) < 4 && Math.Abs(rb.velocity.z) < 4 ) {
+            var userKeyboardInput = new Vector3(
+                Input.GetAxis("Horizontal"),
+                0,
+                Input.GetAxis("Vertical")
+            );
+            var velocity = transform.rotation * userKeyboardInput * movementSpeed;
 
-        velocity.y = rb.velocity.y;
-        rb.velocity = velocity;
-        
-        
+            velocity.y = rb.velocity.y;
+            //velocity.y = 0;
+            //rb.AddForce(velocity, ForceMode.Acceleration);
+            rb.velocity = velocity;
+        }
+
+
     }
 
     private void OnCollisionEnter(Collision collision) {
