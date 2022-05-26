@@ -25,25 +25,29 @@ public class PlayerController : MonoBehaviour {
         HandleVerticalRotation();
         HandleJump();
         HandleCrouch();
-        if (numberOfDashes > 0 && Input.GetKeyDown(KeyCode.LeftShift)) {
-            var dashDirection = rb.velocity;
-            dashDirection.y = 0;
-            if (dashDirection.magnitude!=0) {
-                dashDirection = transform.rotation * Vector3.forward * movementSpeed * 3;
-                //rb.AddForce(dashDirection * 5, ForceMode.Impulse);
-                dashDirection.y = rb.velocity.y;
-                rb.velocity = dashDirection;
-                numberOfDashes--;
-            }
-
-        }
+        HandleDash();
         
+    }
+
+    private void HandleDash() {
+        if (numberOfDashes > 0 && Input.GetKeyDown(KeyCode.LeftShift)) {
+            //var dashDirection = rb.velocity;
+            //dashDirection.y = 0;
+
+            var dashDirection = transform.rotation * Vector3.forward * movementSpeed * 3;
+            //rb.AddForce(dashDirection * 5, ForceMode.Impulse);
+            dashDirection.y = rb.velocity.y;
+            rb.velocity = dashDirection;
+            numberOfDashes--;
+        }
     }
 
     private void HandleCrouch() {
         if (Input.GetKey(KeyCode.LeftControl)) {
             collider.height = 1f;
             collider.center.Set(0, -0.5f, 0);
+            //collider.
+            //collider.center.
         }
         else {
             collider.height = 2f;
@@ -73,7 +77,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void HandlePlayerMovement() {
-        if (Math.Abs(rb.velocity.x) < 4 && Math.Abs(rb.velocity.z) < 4 ) {
+        if (Math.Abs(rb.velocity.x) < 6 && Math.Abs(rb.velocity.z) < 6 ) {
             var userKeyboardInput = new Vector3(
                 Input.GetAxis("Horizontal"),
                 0,
